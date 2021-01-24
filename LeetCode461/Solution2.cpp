@@ -1,8 +1,3 @@
-//
-// Created by 22577 on 2021/1/24.
-//
-
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -21,24 +16,23 @@
 using namespace std;
 
 /**
- * 第一种解法，通过异或运算比较最低位
+ * 第二种解法，布赖恩·克尼根算法
+ * 快速跳过两个1之间0的位数，通过cur&(cur-1)可以直接将数cur最右边的1变为0
+ * 记录通过几次这样的运算cur变成了0，那么cur当中就有几个1，从而能够得出x和y的二进制位中
+ * 有多少位是不同的。
  */
 class Solution {
 public:
     int hammingDistance(int x, int y) {
         int res = 0, cur = x ^ y;
         while (cur) {
-            res += (cur & 1);
-            cur >>= 1;
+            cur = cur & (cur - 1);
+            res++;
         }
         return res;
     }
 };
 
-/**
- * 汉明
- * @return
- */
 int main() {
     Solution s;
     int i = s.hammingDistance(INT_MAX, 2);
