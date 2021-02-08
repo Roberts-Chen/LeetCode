@@ -4,33 +4,26 @@
 using namespace std;
 
 /**
- * 动态规划
- * dp[i][0]表示以A[i]结尾的湍流子数组的最大长度，且A[i - 1] > A[i]；
- * dp[i][1]表示以A[i]结尾的湍流子数组的最大长度，且A[i - 1] < A[i]；
- *
- * 对于A[i - 1] > A[i]而言，如果A[i]要构成湍流子数组，则需考虑i - 1 = 0或者
- * i - 1 > 0 且 A[i - 2] < A[i - 1]，所以dp[i][0] = dp[i - 1][1] + 1，dp[1][0] = 1
- *
- * 对于A[i - 1] < A[i]而言，如果A[i]要构成湍流子数组，则需考虑i - 1 = 0或者
- * i - 1 > 0 且 A[i - 2] > A[i - 1]，所以dp[i][1] = dp[i - 1][0] + 1，dp[1][1] = 1
- *
- * 对于A[i - 1] == A[i]而言，直接令dp[i][0] = dp[i][1] = 1
+ * 动态规划，空间优化，因为dp[i]之和dp[i - 1]有关，所以可以设置两个变量dp0和dp1
+ * 将空间复杂度优化为：O(1)
  *
  */
 class Solution {
 public:
     int maxTurbulenceSize(vector<int> &arr) {
         int n = arr.size();
-        int res = 1;
-        vector<vector<int>> dp(n, vector<int>(2, 1));
-        dp[0][0] = dp[0][1] = 1;
+        int res = 1, dp0 = 1, dp1 = 1;
         for (int i = 1; i < n; i++) {
             if (arr[i] > arr[i - 1]) {
-                dp[i][1] = dp[i - 1][0] + 1;
-                res = max(res, dp[i][1]);
+                dp1 = dp0 + 1;
+                dp0 = 1;
+                res = max(res, dp1);
             } else if (arr[i] < arr[i - 1]) {
-                dp[i][0] = dp[i - 1][1] + 1;
-                res = max(res, dp[i][0]);
+                dp0 = dp1 + 1;
+                dp1 = 1;
+                res = max(res, dp0);
+            } else {
+                dp0 = dp1 = 1;
             }
         }
         return res;
